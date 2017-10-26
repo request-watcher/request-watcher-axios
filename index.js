@@ -32,8 +32,10 @@ function useWatcher(axios, watcher, watcherParams) {
 
         // send request to request-watcher-server
         axios.interceptors.request.eject(requestInterceptor)
+        axios.interceptors.response.eject(responseInterceptor)
         emitReq({ headers, method, url, params: data })
         axios.interceptors.request.use(requestInterceptor)
+        axios.interceptors.response.use(responseInterceptor)
 
         return config
     }, function (error) {
@@ -46,9 +48,11 @@ function useWatcher(axios, watcher, watcherParams) {
 
         // send response to request-watcher-server
         const uuid = JSON.parse(response.config.data).__emit_uuid__
+        axios.interceptors.request.eject(requestInterceptor)
         axios.interceptors.response.eject(responseInterceptor)
         emitPair[uuid].emitRes({ status, headers, data })
         emitPair[uuid] = null
+        axios.interceptors.request.use(requestInterceptor)
         axios.interceptors.response.use(responseInterceptor)
 
         return response
