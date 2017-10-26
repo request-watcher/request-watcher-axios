@@ -65,4 +65,4 @@ function generateRandom() {
     return md5(new Date().toString() + Math.random())
 }
 
-module.exports = axiosWatcher
+module.exports = R.curry(axiosWatcher)
