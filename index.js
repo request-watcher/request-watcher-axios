@@ -3,7 +3,8 @@ const R = require('ramda')
 var axios = null,
     watcher = null,
     watcherParams = {},
-    interceptors = {}
+    interceptors = {},
+    emitPair = {}
 
 function useWatcher(axios, watcher, watcherParams) {
 
@@ -16,12 +17,17 @@ function useWatcher(axios, watcher, watcherParams) {
         // generate the emit pair, 
         // and use config to send emitRes to axios.interceptors.response's callback
         var { emitReq, emitRes } = watcher(watcherParams)
-        // in browser env, can not add new property to config, so...
-        config.validateStatus.__emitRes__ = emitRes
+        const uuid = generateRandom()
+        emitPair[uuid] = {
+          emitReq, emitRes
+        }
 
         // generate the emitReq params
         var { headers, method, url, data } = config
         headers = R.isEmpty(headers[method]) ? headers.common : headers[method]
+
+        // to use in related response
+        data.__emit_uuid__ = uuid
 
         // send request to request-watcher-server
         axios.interceptors.request.eject(requestInterceptor)
@@ -38,9 +44,10 @@ function useWatcher(axios, watcher, watcherParams) {
         var { status, headers, data } = response
 
         // send response to request-watcher-server
+        const uuid = JSON.parse(response.config.data).__emit_uuid__
         axios.interceptors.response.eject(responseInterceptor)
-        response.config.validateStatus.__emitRes__({ status, headers, data })
-        
+        emitPair[uuid].emitRes({ status, headers, data })
+        emitPair[uuid] = null
         axios.interceptors.response.use(responseInterceptor)
 
         return response
@@ -48,6 +55,10 @@ function useWatcher(axios, watcher, watcherParams) {
         return Promise.reject(error)
     })
     interceptors = { requestInterceptor, responseInterceptor }
+}
+
+function generateRandom() {
+    return md5(new Date().toString() + Math.random())
 }
 
 // function unuseWatcher() {

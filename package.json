@@ -7,6 +7,8 @@
   "author": "lisiurday <lisiurday@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "ramda": "^0.25.0"
+    "global": "^4.3.2",
+    "ramda": "^0.25.0",
+    "request-watcher-server": "^1.4.3"
   }
 }
