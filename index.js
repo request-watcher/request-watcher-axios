@@ -16,7 +16,8 @@ function useWatcher(axios, watcher, watcherParams) {
         // generate the emit pair, 
         // and use config to send emitRes to axios.interceptors.response's callback
         var { emitReq, emitRes } = watcher(watcherParams)
-        config.__emitRes__ = emitRes
+        // in browser env, can not add new property to config, so...
+        config.validateStatus.__emitRes__ = emitRes
 
         // generate the emitReq params
         var { headers, method, url, data } = config
@@ -38,7 +39,8 @@ function useWatcher(axios, watcher, watcherParams) {
 
         // send response to request-watcher-server
         axios.interceptors.response.eject(responseInterceptor)
-        response.config.__emitRes__({ status, headers, data })
+        response.config.validateStatus.__emitRes__({ status, headers, data })
+        
         axios.interceptors.response.use(responseInterceptor)
 
         return response
