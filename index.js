@@ -1,4 +1,5 @@
 const R = require('ramda')
+const md5 = require('md5')
 
 var axios = null,
     watcher = null,
