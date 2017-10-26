@@ -1,3 +1,5 @@
+const R = require('ramda')
+
 var axios = null,
     watcher = null,
     watcherParams = {},

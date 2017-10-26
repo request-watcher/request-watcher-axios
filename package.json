@@ -5,5 +5,8 @@
   "main": "index.js",
   "repository": "git@github.com:lisiur/request-watcher-axios.git",
   "author": "lisiurday <lisiurday@gmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "ramda": "^0.25.0"
+  }
 }
