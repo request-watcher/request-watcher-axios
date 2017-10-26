@@ -28,7 +28,7 @@ function useWatcher(axios, watcher, watcherParams) {
         headers = R.isEmpty(headers[method]) ? headers.common : headers[method]
 
         // to use in related response
-        data.__emit_uuid__ = uuid
+        config.data.__emit_uuid__ = uuid
 
         // send request to request-watcher-server
         axios.interceptors.request.eject(requestInterceptor)
