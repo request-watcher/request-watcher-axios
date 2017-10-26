@@ -7,7 +7,6 @@
   "author": "lisiurday <lisiurday@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "global": "^4.3.2",
     "md5": "^2.2.1",
     "ramda": "^0.25.0"
   }
