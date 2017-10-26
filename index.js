@@ -23,7 +23,9 @@ function useWatcher(axios, watcher, watcherParams) {
         headers = R.isEmpty(headers[method]) ? headers.common : headers[method]
 
         // send request to request-watcher-server
+        axios.interceptors.request.eject(requestInterceptor)
         emitReq({ headers, method, url, params: data })
+        axios.interceptors.request.use(requestInterceptor)
 
         return config
     }, function (error) {
@@ -35,7 +37,9 @@ function useWatcher(axios, watcher, watcherParams) {
         var { status, headers, data } = response
 
         // send response to request-watcher-server
+        axios.interceptors.response.eject(responseInterceptor)
         response.config.__emitRes__({ status, headers, data })
+        axios.interceptors.response.use(responseInterceptor)
 
         return response
     }, function (error) {
