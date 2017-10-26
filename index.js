@@ -1,14 +1,13 @@
 const R = require('ramda')
 const md5 = require('md5')
+const axios = require('axios')
 
-var axios = null,
-    watcher = null,
+var watcher = null,
     interceptors = {},
     emitPair = {}
 
-function axiosWatcher(axios, watcher) {
+function axiosWatcher(watcher) {
 
-    axios = axios
     watcher = watcher
 
     var requestInterceptor, responseInterceptor
@@ -65,4 +64,4 @@ function generateRandom() {
     return md5(new Date().toString() + Math.random())
 }
 
-module.exports = R.curry(axiosWatcher)
+module.exports = axiosWatcher
