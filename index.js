@@ -27,6 +27,7 @@ function axiosWatcher(watcher) {
         // use config to send emitRes to axios.interceptors.response's callback
         // to use in related response
         if (config.url !== watcher.global.origin + '/receiver') {
+            if (!config.data) config.data = {} // must have config.data to carry __emit_uuid__
             config.data.__emit_uuid__ = uuid
             emitReq({ headers, method, url, params: data }).catch(error => console.log(error))
         }
