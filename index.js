@@ -14,7 +14,6 @@ function axiosWatcher(watcher) {
     requestInterceptor = axios.interceptors.request.use(function (config) {
 
         // generate the emit pair, 
-        // and use config to send emitRes to axios.interceptors.response's callback
         var { emitReq, emitRes } = watcher()
         const uuid = generateRandom()
         emitPair[uuid] = {
@@ -25,6 +24,7 @@ function axiosWatcher(watcher) {
         var { headers, method, url, data } = config
         headers = R.isEmpty(headers[method]) ? headers.common : headers[method]
 
+        // use config to send emitRes to axios.interceptors.response's callback
         // to use in related response
         if (config.url !== watcher.global.origin + '/receiver') {
             config.data.__emit_uuid__ = uuid
@@ -48,7 +48,7 @@ function axiosWatcher(watcher) {
             try {
                 delete emitPair[uuid]
             } catch (err) {
-                console.log(err)
+                console.log('[request-watcher-axios] you are in strict mode, cannot delete prop')
                 emitPair[uuid] = null
             }
         }
