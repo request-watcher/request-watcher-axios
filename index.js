@@ -38,7 +38,7 @@ function axiosWatcher(watcher) {
     })
 
     responseInterceptor = axios.interceptors.response.use(function (response) {
-        // generate the emitRes params
+
         var { status, headers, data } = response
 
         // send response to request-watcher-server
@@ -56,6 +56,23 @@ function axiosWatcher(watcher) {
 
         return response
     }, function (error) {
+
+        var response = error.response
+        var { status, headers, data } = response
+         
+        // send response to request-watcher-server
+        const uuid = JSON.parse(response.config.data).__emit_uuid__
+        if (emitPair[uuid]) {
+            emitPair[uuid].emitRes({ status, headers, data }).catch(error => console.log(error))
+            // can not delete prop in strict mode, then we just set it to null
+            try {
+                delete emitPair[uuid]
+            } catch (err) {
+                console.log('[request-watcher-axios] you are in strict mode, cannot delete prop')
+                emitPair[uuid] = null
+            }
+        }
+
         return Promise.reject(error)
     })
     interceptors = { requestInterceptor, responseInterceptor }
