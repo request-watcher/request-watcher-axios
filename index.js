@@ -27,8 +27,8 @@ function axiosWatcher(watcher) {
         // use config to send emitRes to axios.interceptors.response's callback
         // to use in related response
         if (config.url !== watcher.global.origin + '/receiver') {
-            if (!config.data) config.data = {} // must have config.data to carry __emit_uuid__
-            config.data.__emit_uuid__ = uuid
+            if (!config.data) config.data = {}
+            config.__emit_uuid__ = uuid
             emitReq({ headers, method, url, params: data }).catch(error => console.log(error))
         }
 
@@ -42,7 +42,8 @@ function axiosWatcher(watcher) {
         var { status, headers, data } = response
 
         // send response to request-watcher-server
-        const uuid = JSON.parse(response.config.data).__emit_uuid__
+        // const uuid = JSON.parse(response.config.data).__emit_uuid__
+        const uuid = response.config.__emit_uuid__
         if (emitPair[uuid]) {
             emitPair[uuid].emitRes({ status, headers, data }).catch(error => console.log(error))
             // can not delete prop in strict mode, then we just set it to null
@@ -61,7 +62,7 @@ function axiosWatcher(watcher) {
         var { status, headers, data } = response
          
         // send response to request-watcher-server
-        const uuid = JSON.parse(response.config.data).__emit_uuid__
+        const uuid = response.config.__emit_uuid__
         if (emitPair[uuid]) {
             emitPair[uuid].emitRes({ status, headers, data }).catch(error => console.log(error))
             // can not delete prop in strict mode, then we just set it to null
