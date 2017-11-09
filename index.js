@@ -59,7 +59,11 @@ function axiosWatcher(watcher) {
     }, function (error) {
 
         var response = error.response
-        var { status, headers, data } = response
+        try {
+            var { status, headers, data } = response // response may be undefined
+        } catch (err) {
+            return Promise.reject(error)
+        }
          
         // send response to request-watcher-server
         const uuid = response.config.__emit_uuid__
