@@ -21,15 +21,16 @@ function axiosWatcher(watcher) {
         }
 
         // generate the emitReq params
-        var { headers, method, url, data } = config
+        var { headers, method, url, data, params } = config
         headers = R.isEmpty(headers[method]) ? headers.common : headers[method]
 
         // use config to send emitRes to axios.interceptors.response's callback
         // to use in related response
         if (config.url !== watcher.global.origin + '/receiver') {
             if (!config.data) config.data = {}
+            if (!config.params) config.params = {}
             config.__emit_uuid__ = uuid
-            emitReq({ headers, method, url, params: data }).catch(error => console.log(error))
+            emitReq({ headers, method, url, params: R.merge(data, params) }).catch(error => console.log(error))
         }
 
         return config
