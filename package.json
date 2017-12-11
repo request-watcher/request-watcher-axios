@@ -1,6 +1,6 @@
 {
   "name": "request-watcher-axios",
-  "version": "1.2.5",
+  "version": "1.2.6",
   "description": "An interceptor to use in axios for request-watcher",
   "main": "src/index.js",
   "repository": "git@github.com:lisiur/request-watcher-axios.git",
