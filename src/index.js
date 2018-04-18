@@ -1,20 +1,15 @@
-var R = require('ramda')
-var md5 = require('md5')
-var axios = window && window.axios || require('axios')
+const R = require('ramda')
+import md5 from 'md5'
 
-var watcher = null,
-    interceptors = {},
+let interceptors = {},
     emitPair = {}
 
-function axiosWatcher(watcher) {
-
-    watcher = watcher
-
+function axiosWatcher(axios, Watcher) {
     var requestInterceptor, responseInterceptor
     requestInterceptor = axios.interceptors.request.use(function (config) {
         try {
             // generate the emit pair, 
-            var { emitReq, emitRes } = watcher()
+            var { emitReq, emitRes } = Watcher()
             const uuid = generateRandom()
             emitPair[uuid] = {
             emitReq, emitRes
@@ -26,7 +21,7 @@ function axiosWatcher(watcher) {
 
             // use config to send emitRes to axios.interceptors.response's callback
             // to use in related response
-            if (config.url !== watcher.global.origin + '/receiver') {
+            if (config.url !== Watcher.global.origin + '/receiver') {
                 if (!config.data) config.data = {}
                 if (!config.params) config.params = {}
                 config.__emit_uuid__ = uuid
@@ -46,7 +41,7 @@ function axiosWatcher(watcher) {
         try {
             var { status, headers, data } = response
 
-            // send response to request-watcher-server
+            // send response to request-Watcher-server
             // const uuid = JSON.parse(response.config.data).__emit_uuid__
             const uuid = response.config.__emit_uuid__
             if (emitPair[uuid]) {
@@ -55,7 +50,7 @@ function axiosWatcher(watcher) {
                 try {
                     delete emitPair[uuid]
                 } catch (err) {
-                    console.log('[request-watcher-axios] you are in strict mode, cannot delete prop')
+                    console.log('[request-Watcher-axios] you are in strict mode, cannot delete prop')
                     emitPair[uuid] = null
                 }
             }
@@ -70,7 +65,7 @@ function axiosWatcher(watcher) {
         try {
             var { status, headers, data } = response // response may be undefined
 
-            // send response to request-watcher-server
+            // send response to request-Watcher-server
             var uuid = response.config.__emit_uuid__
             if (emitPair[uuid]) {
                 emitPair[uuid].emitRes({ status, headers, data }).catch(error => console.log(error))
@@ -78,7 +73,7 @@ function axiosWatcher(watcher) {
                 try {
                     delete emitPair[uuid]
                 } catch (err) {
-                    console.log('[request-watcher-axios] you are in strict mode, cannot delete prop')
+                    console.log('[request-Watcher-axios] you are in strict mode, cannot delete prop')
                     emitPair[uuid] = null
                 }
             }
@@ -95,4 +90,4 @@ function generateRandom() {
     return md5(new Date().toString() + Math.random())
 }
 
-module.exports = axiosWatcher
+export default R.curry(axiosWatcher)

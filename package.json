@@ -2,7 +2,7 @@
   "name": "request-watcher-axios",
   "version": "1.2.6",
   "description": "An interceptor to use in axios for request-watcher",
-  "main": "src/index.js",
+  "main": "lib/axios-watcher.js",
   "repository": "git@github.com:lisiur/request-watcher-axios.git",
   "author": "lisiurday <lisiurday@gmail.com>",
   "license": "MIT",
@@ -14,13 +14,11 @@
     "ramda": "^0.25.0"
   },
   "devDependencies": {
-    "axios": "^0.17.1",
     "babel-core": "^6.26.0",
-    "babel-loader": "^7.1.2",
+    "babel-loader": "^7.1.4",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.6.1",
-    "webpack": "^3.10.0"
-  },
-  "peerDependencies": {
-    "axios": "^0.0.0"
+    "webpack": "^4.6.0",
+    "webpack-cli": "^2.0.14"
   }
 }
